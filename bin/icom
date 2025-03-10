@@ -1,0 +1,12 @@
+#!/bin/bash
+#??Install command if not found and execute
+#&&linux,mshx
+###Usage: icom <command> <args>
+###Example: icom nvim test.txt
+
+if ! command -v $1 &> /dev/null; then
+    upsi $1
+fi
+
+all_args=("$@")
+exec "${all_args[@]}"

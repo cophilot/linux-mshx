@@ -1,0 +1,14 @@
+#!/bin/bash
+#??Make a new shell script
+#&&linux,mshx
+###Usage: mksc <scriptname>
+
+if [ "$1" == "" ]; then
+    echo "Usage: mksc <scriptname>"
+    exit 1
+fi
+
+touch $1
+chmod +x $1
+echo "#!/bin/bash" > $1
+
