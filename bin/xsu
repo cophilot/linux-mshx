@@ -1,0 +1,33 @@
+#!/bin/bash
+#??Navigate up the directory tree by a specified number of levels and list 
+#&&linux,mshx
+###Usage: xsu <levels>
+###Example: xsu 2
+
+# Default to 1 if no argument is provided
+levels=${1:-1}
+
+# Ensure the levels is a positive integer
+if ! [[ "$levels" =~ ^[0-9]+$ ]] || [ "$levels" -lt 1 ]; then
+  echo "Error: Please provide a positive integer."
+  exit 1
+fi
+
+# Construct the path to the desired parent directory
+new_dir=$(pwd)
+for ((i=0; i<levels; i++)); do
+  new_dir=$(dirname "$new_dir")
+done
+
+# Change directory to the new path
+cd "$new_dir" || exit 1
+
+# Print the new working directory
+echo "Changed directory to: $new_dir"
+
+ls
+
+# Keep the shell open in the new directory
+exec $SHELL
+
+
