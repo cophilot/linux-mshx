@@ -1,7 +1,6 @@
 #!/bin/bash
-#??Clear and run
+#??Clear the terminal and run the provided command
 #&&linux,mshx
-###Clear the terminal and run the provided command
 ###Usage: car <command>
 ###Example: car ls
 

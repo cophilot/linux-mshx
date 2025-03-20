@@ -2,7 +2,7 @@
 #??cd + ls
 #&&linux,mshx
 ###Change the directory and list
-###xs <dir>
+###Usage: xs <dir>
 
 path="$1"
 
