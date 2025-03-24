@@ -1,0 +1,6 @@
+#!/bin/bash
+#??Print a message in red
+#&&linux,mshx
+###Usage: echoR <msg>
+
+echo -e "\e[31m$1\e[0m"
