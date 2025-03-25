@@ -1,0 +1,28 @@
+#!/bin/bash
+#??BackUp Helper (create a backup of a file or directory)
+#&&linux,mshx
+###Backups a file or directory by adding a .bak extension.
+###If the file or directory already has a .bak extension, it will be removed.
+###Usage: buh <file_or_directory>
+
+if [ "$1" == "" ]; then
+    msh m buh
+    exit 1
+fi
+
+if [ ! -e "$1" ]; then
+    echo "File or directory does not exist: $1"
+    exit 1
+fi
+
+item_name="$1"
+if [[ "$1" == */ ]]; then
+    item_name=$(echo "$1" | sed 's:/$::')
+fi
+
+if [[ "$item_name" == *.bak ]]; then
+    new_name=$(echo "$item_name" | sed 's/\.bak$//')
+    mv "$item_name" "$new_name"
+else
+    mv "$item_name" "$item_name.bak" 
+fi
