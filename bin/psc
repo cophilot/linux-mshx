@@ -1,0 +1,100 @@
+#!/bin/bash
+#??A CLI tool to run project scripts
+#&&linux,mshx
+###Usage: psc < command | script >
+###Commands:
+### - init: Create a directory for scripts
+### - list: List all scripts
+### - add: Add a new script
+
+
+command=$1
+
+if [ -z $command ]; then
+    echo "No command provided"
+    echo ""
+    msh m psc
+    exit 1
+fi
+
+if [ -f "pnpm-lock.yaml" ]; then
+    pnpm run $*
+    exit 0
+fi
+
+if [ -f "yarn.lock" ]; then
+    yarn run $*
+    exit 0
+fi
+
+if [ -f "package-lock.json" ]; then
+    npm run $*
+    exit 0
+fi
+
+if [ $command == "init" ] || [ $command == "i" ]; then
+    mkdir -p .scripts
+    echo "Directory '.scripts' created"
+    exit 0
+elif [ $command == "help" ] || [ $command == "h" ]; then
+    msh m psc
+    exit 0
+fi
+
+dir=".scripts"
+if [ ! -d $dir ]; then
+    dir=".script"
+fi
+if [ ! -d $dir ]; then
+    dir="scripts"
+fi
+if [ ! -d $dir ]; then
+    dir="script"
+fi
+if [ ! -d $dir ]; then
+    echo "Directory '.scripts' not found"
+    echo "Run 'psc init' to create the directory"
+    exit 1
+fi
+
+if [ $command == "list" ] || [ $command == "ls" ]; then
+    echo "Available scripts:"
+    ls $dir
+    exit 0
+fi
+
+if [ $command == "add" ] || [ $command == "a" ]; then
+    name=$2
+    if [ -z $name ]; then
+        echo "No name provided"
+        help
+        exit 1
+    fi
+    file="$dir/$name.sh"
+    if [ -f $file ]; then
+        echo "File already exists"
+        exit 1
+    fi
+
+    echo "#!/bin/bash" > $file
+    echo "" >> $file
+    echo "echo \"Running $name\"" >> $file
+    chmod +x $file
+    echo "File created: $file"
+    exit 0
+fi
+
+
+
+file="$dir/$1"
+
+if [ ! -f $file ]; then
+    file="$dir/$1.sh"
+fi
+
+if [ -f $file ]; then
+    echo "Running $file"
+    bash $file $*
+else
+    echo "File not found"
+fi
