@@ -1,0 +1,5 @@
+#!/bin/bash
+#??Open a tmux session named 'dev' or attach to it if it exists
+#&&linux,mshx
+
+tmux a -t dev || tmux new -s dev
