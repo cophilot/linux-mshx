@@ -3,10 +3,10 @@
 #&&linux,mshx
 ###Usage: psc < command | script >
 ###Commands:
-### - init: Create a directory for scripts
-### - list: List all scripts
-### - add: Add a new script
-
+### - init|i: Create a directory for scripts
+### - list|ls: List all scripts
+### - add|a: Add a new script
+### - add-py|apy: Add a new Python script
 
 command=$1
 
@@ -63,6 +63,44 @@ if [ $command == "list" ] || [ $command == "ls" ]; then
     exit 0
 fi
 
+if [ $command == "add-py" ] || [ $command == "apy" ]; then
+    name=$2
+    if [ -z $name ]; then
+        echo "No name provided"
+        help
+        exit 1
+    fi
+
+    file="$dir/$name.sh"
+    if [ -f $file ]; then
+        echo "File already exists: $file"
+        exit 1
+    fi
+    pyfile="$dir/__py/$name.py"
+    if [ -f $pyfile ]; then
+        echo "File already exists: $pyfile"
+        exit 1
+    fi
+
+    mkdir -p "$dir/__py"
+    echo "import sys" > $pyfile
+    echo "print('[PYTHON] Running $name script with args:', sys.argv[2:])" >> $pyfile
+    echo "File created: $pyfile"
+
+    echo "#!/bin/bash" > $file
+    echo "" >> $file
+    echo 'python_command="python"' >> $file
+    echo 'if command -v python3 &> /dev/null; then' >> $file
+    echo '    python_command="python3"' >> $file
+    echo 'fi' >> $file
+    echo "\$python_command $pyfile \"\$@\"" >> $file
+    chmod +x $file
+    echo "File created: $file"
+    exit 0
+fi
+
+
+
 if [ $command == "add" ] || [ $command == "a" ]; then
     name=$2
     if [ -z $name ]; then
@@ -72,7 +110,7 @@ if [ $command == "add" ] || [ $command == "a" ]; then
     fi
     file="$dir/$name.sh"
     if [ -f $file ]; then
-        echo "File already exists"
+        echo "File already exists: $file"
         exit 1
     fi
 
