@@ -1,0 +1,33 @@
+#!/bin/bash
+#??UMlaut Parser (ump): Parses german umlauts and special characters
+#&&linux,mshx
+###Usage: ump "text with umlauts and special characters"
+###OR: ump
+###ump will then open a temporary file in vim for editing and content input
+
+content="$@"
+if [ -z "$content" ]; then
+    tmp_file="___tmp_ump_file.txt"
+    if [ -f "$tmp_file" ]; then
+        rm "$tmp_file"
+    fi
+    touch "$tmp_file"
+    vim "$tmp_file"
+    content=$(cat "$tmp_file")
+    rm "$tmp_file"
+fi
+
+content=$(echo "$content" | sed -e "s/oe/ö/g" -e "s/ae/ä/g" -e "s/ue/ü/g" -e "s/sz/ß/g" -e "s/Ae/Ä/g" -e "s/AE/Ä/g" -e "s/Oe/Ö/g" -e "s/OE/Ö/g" -e "s/Ue/Ü/g" -e "s/UE/Ü/g")
+
+echo "Parsed content:"
+echo ""
+echo "$content"
+echo ""
+
+if command -v xclip &> /dev/null; then
+    echo "$content" | xclip -selection clipboard
+    echo "Content copied to clipboard using xclip."
+elif command -v pbcopy &> /dev/null; then
+    echo "$content" | pbcopy
+    echo "Content copied to clipboard using pbcopy."
+fi
