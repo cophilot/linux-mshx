@@ -3,14 +3,48 @@
 #&&linux,mshx
 ###Install packages on Fedora, Ubuntu, Debian, and Mint
 ###Usage: upsi <package1> <package2> ...
+###Or: upsi --file [file]
+###This will install packages listed in the specified file, or ~/.upsi if no file is specified 
 
+distro=$(cat /etc/os-release | grep '^ID=' | cut -d'=' -f2)
 
 if [ "$1" == "" ]; then
-    echo "Usage: upsi <package1> <package2> ..."
+    msh manual upsi
     exit 1
 fi
 
-distro=$(cat /etc/os-release | grep '^ID=' | cut -d'=' -f2)
+if [ "$1" == "--file" ]; then
+    shift
+
+    upsi_file="~/.upsi"
+    if [ "$1" != "" ]; then
+        upsi_file="$1"
+    fi
+
+    if [ ! -f "$upsi_file" ]; then
+        echo "File $upsi_file does not exist."
+        exit 1
+    fi
+
+    packages=$(cat "$upsi_file")
+    if [ "$packages" == "" ]; then
+        echo "No packages found in $upsi_file."
+        exit 0
+    fi
+
+    count=$(echo "$packages" | wc -l)
+    echo "Installing $count packages from $upsi_file..."
+
+    for package in $packages; do
+        if [ "$package" != "" ]; then
+            echo "Installing $package..."
+            upsi "$package"
+        fi
+    done
+    echo "All packages from $upsi_file have been installed."
+    exit 0
+fi
+
 
 if [ "$distro" == "fedora" ]; then
     sudo dnf install -y $*
@@ -37,3 +71,4 @@ else
     exit 1
 fi
 
+echo "Packages installed successfully: $*"

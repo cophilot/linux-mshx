@@ -1,0 +1,41 @@
+#!/bin/bash
+#??Ultimate Package System Installer Freeze
+#&&linux,mshx
+###Freeze installed packages on Fedora, Ubuntu, Debian, and Mint
+###Usage: upsi-freeze [file]
+###If no file is specified, it defaults to ~/.upsi in the current directory
+
+upsi_file="~/.upsi"
+
+if [ "$1" != "" ]; then
+    upsi_file="$1"
+fi
+
+if [ ! -f "$upsi_file" ]; then
+    touch "$upsi_file"
+fi
+
+distro=$(cat /etc/os-release | grep '^ID=' | cut -d'=' -f2)
+
+if [ "$distro" == "fedora" ]; then
+    sudo dnf list installed | awk '{print $1}' | grep -v '^Installed' > "$upsi_file"
+elif [ "$distro" == "ubuntu" ] || [ "$distro" == "debian" ] || [ "$distro" == "mint" ]; then
+    sudo apt list --installed | awk -F/ '{print $1}' | grep -v '^Listing' > "$upsi_file"
+elif [ "$distro" == "arch" ]; then
+    pacman -Qq > "$upsi_file"
+elif [ "$distro" == "alpine" ]; then
+    apk info > "$upsi_file"
+elif [ "$distro" == "opensuse" ]; then
+    zypper se --installed-only | awk '{print $3}' | grep -v '^S' > "$upsi_file"
+elif [ "$distro" == "centos" ]; then
+    yum list installed | awk '{print $1}' | grep -v '^Installed' > "$upsi_file"
+elif [ "$distro" == "rhel" ]; then
+    yum list installed | awk '{print $1}' | grep -v '^Installed' > "$upsi_file"
+elif [ "$distro" == "gentoo" ]; then
+    equery list '*' > "$upsi_file"
+else
+    echo "Unsupported distro: $distro"
+    exit 1
+fi
+
+echo "Installed packages have been frozen to $upsi_file"
