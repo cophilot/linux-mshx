@@ -1,0 +1,29 @@
+#!/bin/bash
+#??Extract a .tar.gz or .zip file to the current directory.
+#&&linux,mshx
+###Usage: xtrc <file>
+###Where the file is a .tar.gz or .zip archive.
+
+file="$1"
+
+if [ -z "$file" ]; then
+    echo "No file provided"
+    msh manual xtrc
+    exit 1
+fi
+
+if [ ! -f "$file" ]; then
+    echo "File '$file' not found"
+    exit 1
+fi
+
+if [[ "$file" == *.tar.gz ]]; then
+    tar -xvzf "$file"
+elif [[ "$file" == *.zip ]]; then
+    unzip "$file"
+else
+    ending=$(echo "$file" | awk -F. '{print $NF}')
+    echo "Unsupported file type: .$ending"
+    echo "Only .tar.gz and .zip files are supported"
+    exit 1
+fi
