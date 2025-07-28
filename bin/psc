@@ -3,10 +3,11 @@
 #&&linux,mshx
 ###Usage: psc < command | script >
 ###Commands:
-### - init|i: Create a directory for scripts
-### - list|ls: List all scripts
-### - add|a: Add a new script
-### - add-py|apy: Add a new Python script
+### - init|i:           Create a directory for scripts
+### - interactive|it:   Interactively choose and run a script
+### - list|ls:          List all scripts
+### - add|a:            Add a new script
+### - add-py|apy:       Add a new Python script
 
 command=$1
 
@@ -122,7 +123,18 @@ if [ $command == "add" ] || [ $command == "a" ]; then
     exit 0
 fi
 
-
+if [ $command == "interactive" ] || [ $command == "it" ]; then
+    echo "Available scripts:"
+    select script in $(ls $dir); do
+        if [ -n "$script" ]; then
+            echo "Running $script"
+            bash "$dir/$script" $*
+            exit 0
+        else
+            echo "Invalid selection"
+        fi
+    done
+fi
 
 file="$dir/$1"
 
