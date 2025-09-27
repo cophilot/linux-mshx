@@ -54,6 +54,8 @@ elif [ "$distro" == "ubuntu" ] || [ "$distro" == "debian" ] || [ "$distro" == "m
     else
         sudo apt install -y $*
     fi
+elif [ "$distro" == "bluefin" ]; then
+    brew install $*
 elif [ "$distro" == "arch" ]; then
     sudo pacman -S $*
 elif [ "$distro" == "alpine" ]; then

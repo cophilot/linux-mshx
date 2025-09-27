@@ -33,6 +33,8 @@ elif [ "$distro" == "rhel" ]; then
     yum list installed | awk '{print $1}' | grep -v '^Installed' > "$upsi_file"
 elif [ "$distro" == "gentoo" ]; then
     equery list '*' > "$upsi_file"
+elif [ "$distro" == "bluefin" ]; then
+    brew list > "$upsi_file"
 else
     echo "Unsupported distro: $distro"
     exit 1
