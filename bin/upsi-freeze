@@ -6,6 +6,7 @@
 ###If no file is specified, it defaults to ~/.upsi in the current directory
 
 upsi_file="$HOME/.upsi"
+upsi_file=".upsi"
 
 if [ "$1" != "" ]; then
     upsi_file="$1"
@@ -18,7 +19,7 @@ fi
 distro=$(cat /etc/os-release | grep '^ID=' | cut -d'=' -f2)
 
 if [ "$distro" == "fedora" ]; then
-    dnf list installed | awk '{print $1}' | grep -v '^Installed' > "$upsi_file"
+    rpm --query --all | awk '{print $1}' | grep -v '^Installed' > "$upsi_file"
 elif [ "$distro" == "ubuntu" ] || [ "$distro" == "debian" ] || [ "$distro" == "mint" ]; then
     apt list --installed | awk -F/ '{print $1}' | grep -v '^Listing' > "$upsi_file"
 elif [ "$distro" == "arch" ]; then
