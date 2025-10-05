@@ -6,7 +6,6 @@
 ###If no file is specified, it defaults to ~/.upsi in the current directory
 
 upsi_file="$HOME/.upsi"
-upsi_file=".upsi"
 
 if [ "$1" != "" ]; then
     upsi_file="$1"
